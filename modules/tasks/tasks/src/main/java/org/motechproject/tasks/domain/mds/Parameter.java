@@ -7,6 +7,8 @@ import org.motechproject.mds.event.CrudEventType;
 import org.motechproject.tasks.domain.mds.channel.ActionParameter;
 import org.motechproject.tasks.domain.mds.channel.EventParameter;
 import org.motechproject.tasks.domain.mds.task.FieldParameter;
+import org.motechproject.tasks.domain.mds.ParameterType;
+import org.motechproject.tasks.dto.ParameterDto;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -44,6 +46,8 @@ public abstract class Parameter implements Serializable {
         this.displayName = displayName;
         this.type = type;
     }
+
+    public abstract ParameterDto toDto();
 
     public String getDisplayName() {
         return displayName;

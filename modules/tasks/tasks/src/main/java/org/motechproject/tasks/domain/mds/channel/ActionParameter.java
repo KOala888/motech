@@ -10,6 +10,8 @@ import org.motechproject.mds.util.SecurityMode;
 import org.motechproject.tasks.constants.TasksRoles;
 import org.motechproject.tasks.domain.mds.Parameter;
 import org.motechproject.tasks.domain.mds.ParameterType;
+import org.motechproject.tasks.domain.mds.ParameterType;
+import org.motechproject.tasks.dto.ActionParameterDto;
 
 import java.util.Objects;
 import java.util.SortedSet;
@@ -127,6 +129,10 @@ public class ActionParameter extends Parameter implements Comparable<ActionParam
 
     public void setOptions(SortedSet<String> options) {
         this.options = options;
+    }
+
+    public ActionParameterDto toDto() {
+        return new ActionParameterDto(getDisplayName(), getType(), order, key, value, required, hidden, options);
     }
 
     @Override
