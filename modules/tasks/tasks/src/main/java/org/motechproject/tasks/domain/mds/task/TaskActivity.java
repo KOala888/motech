@@ -10,7 +10,7 @@ import org.motechproject.mds.annotations.Ignore;
 import org.motechproject.mds.event.CrudEventType;
 import org.motechproject.mds.util.SecurityMode;
 import org.motechproject.tasks.constants.TasksRoles;
-import org.motechproject.tasks.domain.mds.task.TaskActivityType;
+import org.motechproject.tasks.domain.enums.TaskActivityType;
 import org.motechproject.tasks.dto.TaskActivityDto;
 
 import java.util.ArrayList;

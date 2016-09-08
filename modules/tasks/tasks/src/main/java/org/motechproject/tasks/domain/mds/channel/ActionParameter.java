@@ -9,15 +9,14 @@ import org.motechproject.mds.event.CrudEventType;
 import org.motechproject.mds.util.SecurityMode;
 import org.motechproject.tasks.constants.TasksRoles;
 import org.motechproject.tasks.domain.mds.Parameter;
-import org.motechproject.tasks.domain.mds.ParameterType;
-import org.motechproject.tasks.domain.mds.ParameterType;
+import org.motechproject.tasks.domain.enums.ParameterType;
 import org.motechproject.tasks.dto.ActionParameterDto;
 
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static org.motechproject.tasks.domain.mds.ParameterType.UNICODE;
+import static org.motechproject.tasks.domain.enums.ParameterType.UNICODE;
 
 /**
  * Represents a single parameter of an action in the channel definition.

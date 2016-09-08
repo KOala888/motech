@@ -1,6 +1,6 @@
 package org.motechproject.tasks.dto;
 
-import org.motechproject.tasks.domain.mds.ParameterType;
+import org.motechproject.tasks.domain.enums.ParameterType;
 
 import java.util.Objects;
 import java.util.SortedSet;

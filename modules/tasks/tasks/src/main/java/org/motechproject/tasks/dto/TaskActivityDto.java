@@ -1,7 +1,7 @@
 package org.motechproject.tasks.dto;
 
 import org.joda.time.DateTime;
-import org.motechproject.tasks.domain.mds.task.TaskActivityType;
+import org.motechproject.tasks.domain.enums.TaskActivityType;
 
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package org.motechproject.tasks.dto;
 
-import org.motechproject.tasks.domain.mds.task.LogicalOperator;
+import org.motechproject.tasks.domain.enums.LogicalOperator;
 
 import java.util.List;
 import java.util.Objects;

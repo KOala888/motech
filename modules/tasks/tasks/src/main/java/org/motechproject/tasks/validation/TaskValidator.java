@@ -5,7 +5,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tasks.domain.KeyInformation;
 import org.motechproject.tasks.domain.ManipulationTarget;
 import org.motechproject.tasks.domain.ManipulationType;
-import org.motechproject.tasks.domain.mds.ParameterType;
+import org.motechproject.tasks.domain.enums.ParameterType;
 import org.motechproject.tasks.domain.mds.channel.ActionEvent;
 import org.motechproject.tasks.domain.mds.channel.ActionParameter;
 import org.motechproject.tasks.domain.mds.channel.Channel;

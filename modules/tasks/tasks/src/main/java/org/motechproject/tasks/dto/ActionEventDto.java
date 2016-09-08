@@ -1,6 +1,6 @@
 package org.motechproject.tasks.dto;
 
-import org.motechproject.tasks.domain.mds.channel.MethodCallManner;
+import org.motechproject.tasks.domain.enums.MethodCallManner;
 
 import java.util.SortedSet;
 

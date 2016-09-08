@@ -1,6 +1,5 @@
 package org.motechproject.tasks.web.domain;
 
-import org.motechproject.tasks.domain.mds.channel.TriggerEvent;
 import org.motechproject.tasks.web.ChannelController;
 import org.motechproject.tasks.dto.TriggerEventDto;
 

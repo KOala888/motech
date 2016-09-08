@@ -9,8 +9,8 @@ import org.motechproject.mds.annotations.Field;
 import org.motechproject.mds.event.CrudEventType;
 import org.motechproject.mds.util.SecurityMode;
 import org.motechproject.tasks.constants.TasksRoles;
+import org.motechproject.tasks.domain.enums.MethodCallManner;
 import org.motechproject.tasks.domain.mds.task.TaskActionInformation;
-import org.motechproject.tasks.domain.mds.channel.MethodCallManner;
 import org.motechproject.tasks.dto.ActionEventDto;
 import org.motechproject.tasks.dto.ActionParameterDto;
 

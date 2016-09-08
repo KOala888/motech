@@ -7,7 +7,7 @@ import org.motechproject.mds.annotations.Field;
 import org.motechproject.mds.event.CrudEventType;
 import org.motechproject.mds.util.SecurityMode;
 import org.motechproject.tasks.constants.TasksRoles;
-import org.motechproject.tasks.domain.mds.task.TaskErrorType;
+import org.motechproject.tasks.domain.enums.TaskErrorType;
 import org.motechproject.tasks.dto.TaskErrorDto;
 
 import java.io.Serializable;

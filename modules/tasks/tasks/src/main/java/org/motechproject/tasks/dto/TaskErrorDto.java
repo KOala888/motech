@@ -24,12 +24,12 @@ public class TaskErrorDto implements Serializable {
         return args;
     }
 
-    public void setArgs(List<String> args) {
-        this.args = args;
-    }
-
     public String getMessage() {
         return message;
+    }
+
+    public void setArgs(List<String> args) {
+        this.args = args;
     }
 
     public void setMessage(String message) {

@@ -2,7 +2,7 @@ package org.motechproject.tasks.web;
 
 import org.motechproject.mds.query.QueryParams;
 import org.motechproject.mds.util.Order;
-import org.motechproject.tasks.domain.mds.task.TaskActivityType;
+import org.motechproject.tasks.domain.enums.TaskActivityType;
 import org.motechproject.tasks.dto.TaskActivityDto;
 import org.motechproject.tasks.service.TaskActivityService;
 import org.motechproject.tasks.service.TaskWebService;
