@@ -5,7 +5,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.motechproject.tasks.domain.KeyInformation;
 import org.motechproject.tasks.domain.ManipulationTarget;
 import org.motechproject.tasks.domain.ManipulationType;
-import org.motechproject.tasks.domain.enums.ParameterType;
+import org.motechproject.tasks.domain.mds.ParameterType;
 import org.motechproject.tasks.domain.mds.channel.ActionEvent;
 import org.motechproject.tasks.domain.mds.channel.ActionParameter;
 import org.motechproject.tasks.domain.mds.channel.Channel;
@@ -24,7 +24,6 @@ import org.motechproject.tasks.domain.mds.task.TaskTriggerInformation;
 import org.motechproject.tasks.service.TriggerEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,7 +55,6 @@ public class TaskValidator extends GeneralValidator {
      * @param task  the task to be validated, not null
      * @return  the set of encountered errors
      */
-    @Transactional
     public Set<TaskError> validate(Task task) {
         Set<TaskError> errors = new HashSet<>();
 
@@ -83,7 +81,6 @@ public class TaskValidator extends GeneralValidator {
      * @param task  the task for which the trigger should be validated, not null
      * @return  the set of encountered errors
      */
-    @Transactional
     public Set<TaskError> validateTrigger(Task task) {
         Set<TaskError> errors = new HashSet<>();
         TaskTriggerInformation triggerInformation = task.getTrigger();
@@ -106,7 +103,6 @@ public class TaskValidator extends GeneralValidator {
      * @param channel  the channel to be checked, not null
      * @return  the set of encountered errors
      */
-    @Transactional
     public Set<TaskError> validateAction(TaskActionInformation actionInformation, Channel channel) {
         Set<TaskError> errors = new HashSet<>();
         boolean exists = channel.containsAction(actionInformation);
@@ -132,7 +128,6 @@ public class TaskValidator extends GeneralValidator {
      * @param availableProviders  the map of the IDs and the providers, not null
      * @return  the set of encountered errors
      */
-    @Transactional
     public Set<TaskError> validateProvider(TaskDataProvider provider, DataSource dataSource, TriggerEvent trigger,
                                                   Map<Long, TaskDataProvider> availableProviders) {
         Set<TaskError> errors = new HashSet<>();
@@ -174,7 +169,6 @@ public class TaskValidator extends GeneralValidator {
      * @param providers  the map of IDs and providers, not null
      * @return  the set of encountered errors
      */
-    @Transactional
     public Set<TaskError> validateActionFields(TaskActionInformation action, ActionEvent actionEvent, TriggerEvent trigger, Map<Long, TaskDataProvider> providers) {
         Map<String, String> fields = action.getValues();
         Map<String, ParameterType> fieldsTypes = new HashMap<>();

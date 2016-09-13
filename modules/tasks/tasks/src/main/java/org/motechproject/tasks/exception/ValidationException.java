@@ -1,6 +1,6 @@
 package org.motechproject.tasks.exception;
 
-import org.motechproject.tasks.dto.TaskErrorDto;
+import org.motechproject.tasks.domain.mds.task.TaskError;
 
 
 import java.text.MessageFormat;
@@ -15,7 +15,7 @@ public class ValidationException extends IllegalArgumentException {
     private static final long serialVersionUID = -8282120820802247252L;
 
     private final String objectType;
-    private final Set<TaskErrorDto> taskErrors;
+    private final Set<TaskError> taskErrors;
 
     /**
      * Exception constructor.
@@ -23,7 +23,7 @@ public class ValidationException extends IllegalArgumentException {
      * @param objectType  the type of the object
      * @param taskErrors  the set of errors
      */
-    public ValidationException(String objectType, Set<TaskErrorDto> taskErrors) {
+    public ValidationException(String objectType, Set<TaskError> taskErrors) {
         this.objectType = objectType;
         this.taskErrors = taskErrors;
     }
@@ -40,14 +40,14 @@ public class ValidationException extends IllegalArgumentException {
         StringBuilder sb = new StringBuilder();
         sb.append("There were validation errors during saving ").append(objectType).append(":\n");
 
-        for (TaskErrorDto taskError : taskErrors) {
+        for (TaskError taskError : taskErrors) {
             sb.append(" - ").append(MessageFormat.format(rb.getString(taskError.getMessage()), taskError.getArgs().toArray())).append("\n");
         }
 
         return sb.toString();
     }
 
-    public Set<TaskErrorDto> getTaskErrors() {
+    public Set<TaskError> getTaskErrors() {
         return taskErrors;
     }
 }

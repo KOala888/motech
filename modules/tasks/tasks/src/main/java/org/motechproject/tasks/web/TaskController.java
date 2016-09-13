@@ -5,12 +5,10 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.motechproject.tasks.constants.TasksRoles;
 import org.motechproject.tasks.domain.mds.task.Task;
-import org.motechproject.tasks.dto.TaskDto;
-import org.motechproject.tasks.dto.TaskErrorDto;
+import org.motechproject.tasks.domain.mds.task.TaskError;
 import org.motechproject.tasks.exception.ValidationException;
 import org.motechproject.tasks.service.TaskActivityService;
 import org.motechproject.tasks.service.TaskService;
-import org.motechproject.tasks.service.TaskWebService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +52,6 @@ public class TaskController {
     private TaskService taskService;
     @Autowired
     private TaskActivityService activityService;
-    @Autowired
-    private TaskWebService taskWebService;
 
     /**
      * Returns the list of all tasks.
@@ -64,8 +60,8 @@ public class TaskController {
      */
     @RequestMapping(value = "/task", method = RequestMethod.GET)
     @ResponseBody
-    public List<TaskDto> getAllTasks() {
-        return taskWebService.getAllTasks();
+    public List<Task> getAllTasks() {
+        return taskService.getAllTasks();
     }
 
     /**
@@ -93,8 +89,8 @@ public class TaskController {
      */
     @RequestMapping(value = "/task/{taskId}", method = RequestMethod.GET)
     @ResponseBody
-    public TaskDto getTask(@PathVariable Long taskId) {
-        return taskWebService.getTask(taskId);
+    public Task getTask(@PathVariable Long taskId) {
+        return taskService.getTask(taskId);
     }
 
     /**
@@ -108,9 +104,9 @@ public class TaskController {
     @RequestMapping(value = "/task/{taskId}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<TaskErrorDto> saveTask(@RequestBody Task task) {
+    public Set<TaskError> saveTask(@RequestBody Task task) {
         if (task.getId() != null) {
-            return taskWebService.save(task);
+            return taskService.save(task);
         }
         return null;
     }
@@ -166,14 +162,14 @@ public class TaskController {
     @RequestMapping(value = "/task/save", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Set<TaskErrorDto> save(@RequestBody Task task) {
-        return taskWebService.save(task);
+    public Set<TaskError> save(@RequestBody Task task) {
+        return taskService.save(task);
     }
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public Set<TaskErrorDto> handleException(ValidationException e) throws IOException {
+    public Set<TaskError> handleException(ValidationException e) throws IOException {
         LOGGER.error("User task did not pass validation", e);
         return e.getTaskErrors();
     }
