@@ -8,14 +8,9 @@ import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.motechproject.tasks.domain.mds.task.TaskConfig;
 import org.motechproject.tasks.domain.mds.task.TaskConfigStep;
-import org.motechproject.tasks.dto.DataSourceDto;
-import org.motechproject.tasks.dto.FilterSetDto;
-import org.motechproject.tasks.dto.TaskConfigStepDto;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * {@code JsonDeserializer} for {@code TaskConfig} class.
@@ -41,22 +36,10 @@ public class TaskConfigDeserializer extends JsonDeserializer<TaskConfig> {
             Iterator<JsonNode> steps = jsonNode.get("steps").getElements();
 
             while (steps.hasNext()) {
-                JsonNode next = steps.next();
-                if (isDtoType(next)) {
-                    config.add(mapper.readValue(next, TaskConfigStepDto.class));
-                } else {
-                    config.add(mapper.readValue(next, TaskConfigStep.class));
-                }
+                config.add(mapper.readValue(steps.next(), TaskConfigStep.class));
             }
         }
 
         return config;
-    }
-
-    private boolean isDtoType(JsonNode node) {
-        String value = node.get("@type").asText();
-        List<String> subtypeNames = Arrays.asList(DataSourceDto.class.getSimpleName(), FilterSetDto.class.getSimpleName());
-
-        return subtypeNames.contains(value);
     }
 }
