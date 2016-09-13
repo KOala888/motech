@@ -10,7 +10,6 @@ import org.motechproject.tasks.service.DynamicChannelLoader;
 import org.motechproject.tasks.service.TriggerEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,19 +26,16 @@ public class TriggerEventServiceImpl implements TriggerEventService {
     private DynamicChannelLoader dynamicChannelLoader;
 
     @Override
-    @Transactional
     public List<TriggerEvent> getDynamicTriggers(String moduleName, int page, int pareSize) {
         return dynamicChannelLoader.getDynamicTriggers(moduleName, page, pareSize);
     }
 
     @Override
-    @Transactional
     public List<TriggerEvent> getStaticTriggers(String moduleName, int page, int pageSize) {
         return triggerEventsDataService.byChannelModuleName(moduleName, new QueryParams(page, pageSize));
     }
 
     @Override
-    @Transactional
     public TriggerEvent getTrigger(TaskTriggerInformation triggerInformation) {
         TriggerEvent triggerEvent = triggerEventsDataService.byChannelModuleNameAndSubject(
                 triggerInformation.getModuleName(), triggerInformation.getSubject());
@@ -48,7 +44,6 @@ public class TriggerEventServiceImpl implements TriggerEventService {
     }
 
     @Override
-    @Transactional
     public boolean triggerExists(TaskTriggerInformation information) {
         return getTrigger(information) != null;
     }
@@ -59,7 +54,6 @@ public class TriggerEventServiceImpl implements TriggerEventService {
     }
 
     @Override
-    @Transactional
     public long countStaticTriggers(String moduleName) {
         return triggerEventsDataService.countByChannelModuleName(moduleName);
     }
@@ -70,7 +64,6 @@ public class TriggerEventServiceImpl implements TriggerEventService {
     }
 
     @Override
-    @Transactional
     public Set<TaskError> validateTrigger(TaskTriggerInformation trigger) {
         Set<TaskError> errors = new HashSet<>();
         String subject = trigger.getSubject();

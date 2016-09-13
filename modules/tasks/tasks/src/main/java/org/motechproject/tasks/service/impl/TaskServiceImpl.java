@@ -43,7 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 
 import javax.jdo.Query;
 import java.io.IOException;
@@ -102,13 +103,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public Set<TaskError> save(final Task task) {
         LOGGER.info("Saving task: {} with ID: {}", task.getName(), task.getId());
         Set<TaskError> errors = taskValidator.validate(task);
 
         if (task.isEnabled() && !isEmpty(errors)) {
-            throw new ValidationException(TaskValidator.TASK, TaskError.toDtos(errors));
+            throw new ValidationException(TaskValidator.TASK, errors);
         }
 
         validateName(task);
@@ -118,7 +118,7 @@ public class TaskServiceImpl implements TaskService {
 
         if (!isEmpty(errors)) {
             if (task.isEnabled()) {
-                throw new ValidationException(TaskValidator.TASK, TaskError.toDtos(errors));
+                throw new ValidationException(TaskValidator.TASK, errors);
             } else {
                 task.setValidationErrors(errors);
             }
@@ -133,7 +133,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public ActionEvent getActionEventFor(TaskActionInformation taskActionInformation)
             throws ActionNotFoundException {
         Channel channel = channelService.getChannel(taskActionInformation.getModuleName());
@@ -156,7 +155,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public List<Task> getAllTasks() {
         List<Task> tasks = tasksDataService.retrieveAll();
 
@@ -166,7 +164,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public List<Task> findTasksByName(String name) {
         List<Task> tasks = tasksDataService.findTasksByName(name);
 
@@ -176,13 +173,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public List<Task> findActiveTasksForTrigger(final TriggerEvent trigger) {
         return (trigger == null) ? Collections.<Task>emptyList() : findActiveTasksForTriggerSubject(trigger.getSubject());
     }
 
     @Override
-    @Transactional
     public List<Task> findActiveTasksForTriggerSubject(final String subject) {
         List<Task> list = null;
 
@@ -237,7 +232,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public Task getTask(Long taskId) {
         Task task = tasksDataService.findById(taskId);
         checkChannelAvailableInTask(task);
@@ -246,19 +240,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public void deleteTask(Long taskId) {
         Task t = getTask(taskId);
 
         if (t == null) {
             throw new TaskNotFoundException(taskId);
         }
-        LOGGER.info("Deleted task: {} with ID: {}", t.getName(), taskId);
+
         tasksDataService.delete(t);
+        LOGGER.info("Deleted task: {} with ID: {}", t.getName(), taskId);
     }
 
     @MotechListener(subjects = CHANNEL_UPDATE_SUBJECT)
-    @Transactional
     public void validateTasksAfterChannelUpdate(MotechEvent event) {
         String moduleName = event.getParameters().get(CHANNEL_MODULE_NAME).toString();
         Channel channel = channelService.getChannel(moduleName);
@@ -280,7 +273,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @MotechListener(subjects = DATA_PROVIDER_UPDATE_SUBJECT)
-    @Transactional
     public void validateTasksAfterTaskDataProviderUpdate(MotechEvent event) {
         String providerName = event.getParameters().get(DATA_PROVIDER_NAME).toString();
 
@@ -308,13 +300,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public String exportTask(Long taskId) {
         Task task = getTask(taskId);
 
         if (null != task) {
             LOGGER.info("Exporting task: {} with ID: {}", task.getName(), task.getId());
-            JsonNode node = new ObjectMapper().valueToTree(task.toDto());
+            JsonNode node = new ObjectMapper().valueToTree(task);
             removeIgnoredFields(node);
 
             return node.toString();
@@ -350,7 +341,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public Task importTask(String json) throws IOException {
         LOGGER.info("Importing a task from json");
         LOGGER.trace("The json file: {}", json);
@@ -368,7 +358,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
     public List<Task> findTasksDependentOnModule(final String moduleName) {
         List<Task> tasks = tasksDataService.executeQuery(new QueryExecution<List<Task>>() {
             @Override
@@ -566,36 +555,41 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void addOrUpdate(final Task task) {
-        Task existing = tasksDataService.findById(task.getId());
+        tasksDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                Task existing = tasksDataService.findById(task.getId());
 
-        if (null != existing) {
-            LOGGER.debug("Updating task: {} with ID: {}", existing.getName(), existing.getId());
-            existing.setActions(task.getActions());
-            existing.setDescription(task.getDescription());
-            existing.setFailuresInRow(task.getFailuresInRow());
+                if (null != existing) {
+                    LOGGER.debug("Updating task: {} with ID: {}", existing.getName(), existing.getId());
+                    existing.setActions(task.getActions());
+                    existing.setDescription(task.getDescription());
+                    existing.setFailuresInRow(task.getFailuresInRow());
 
-            if (!existing.isEnabled() && task.isEnabled()) {
-                existing.resetFailuresInRow();
+                    if (!existing.isEnabled() && task.isEnabled()) {
+                        existing.resetFailuresInRow();
+                    }
+
+                    existing.setEnabled(task.isEnabled());
+                    existing.setHasRegisteredChannel(task.hasRegisteredChannel());
+                    existing.setTaskConfig(task.getTaskConfig());
+                    existing.setTrigger(task.getTrigger());
+                    existing.setName(task.getName());
+                    existing.setValidationErrors(task.getValidationErrors());
+                    existing.setNumberOfRetries(task.getNumberOfRetries());
+                    existing.setRetryIntervalInMilliseconds(task.getRetryIntervalInMilliseconds());
+
+                    checkChannelAvailableInTask(existing);
+
+                    tasksDataService.update(existing);
+                } else {
+                    LOGGER.debug("Creating task: {}", task.getName());
+                    checkChannelAvailableInTask(task);
+
+                    tasksDataService.create(task);
+                }
             }
-
-            existing.setEnabled(task.isEnabled());
-            existing.setHasRegisteredChannel(task.hasRegisteredChannel());
-            existing.setTaskConfig(task.getTaskConfig());
-            existing.setTrigger(task.getTrigger());
-            existing.setName(task.getName());
-            existing.setValidationErrors(task.getValidationErrors());
-            existing.setNumberOfRetries(task.getNumberOfRetries());
-            existing.setRetryIntervalInMilliseconds(task.getRetryIntervalInMilliseconds());
-
-            checkChannelAvailableInTask(existing);
-
-            tasksDataService.update(existing);
-        } else {
-            LOGGER.debug("Creating task: {}", task.getName());
-            checkChannelAvailableInTask(task);
-
-            tasksDataService.create(task);
-        }
+        });
 
         LOGGER.info("Saved task: {}", task.getName());
     }

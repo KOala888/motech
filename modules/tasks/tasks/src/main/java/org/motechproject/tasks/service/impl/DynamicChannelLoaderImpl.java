@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +33,6 @@ public class DynamicChannelLoaderImpl implements DynamicChannelLoader {
         this.bundleContext = bundleContext;
     }
 
-    @Override
-    @Transactional
     public List<TriggerEvent> getDynamicTriggers(String moduleName, int page, int pageSize) {
         LOGGER.debug("Retrieving dynamic triggers for channel {}", moduleName);
 
@@ -50,7 +47,6 @@ public class DynamicChannelLoaderImpl implements DynamicChannelLoader {
         return new ArrayList<>();
     }
 
-    @Override
     public boolean providesDynamicTriggers(String moduleName) {
         LOGGER.debug("Retrieving dynamic triggers for channel {}", moduleName);
 
@@ -59,7 +55,6 @@ public class DynamicChannelLoaderImpl implements DynamicChannelLoader {
         return provider != null;
     }
 
-    @Override
     public Long countByChannelModuleName(String moduleName) {
         DynamicChannelProvider provider = getChannelProvider(moduleName);
 
@@ -72,8 +67,6 @@ public class DynamicChannelLoaderImpl implements DynamicChannelLoader {
         return null;
     }
 
-    @Override
-    @Transactional
     public TriggerEvent getTrigger(TaskTriggerInformation triggerInformation) {
         DynamicChannelProvider provider = getChannelProvider(triggerInformation.getModuleName());
 
@@ -86,12 +79,10 @@ public class DynamicChannelLoaderImpl implements DynamicChannelLoader {
         return null;
     }
 
-    @Override
     public boolean channelExists(String moduleName) {
         return getChannelProvider(moduleName) != null;
     }
 
-    @Override
     public boolean validateTrigger(String moduleName, String subject) {
         DynamicChannelProvider provider = getChannelProvider(moduleName);
         return provider.validateSubject(subject);
