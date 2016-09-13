@@ -7,12 +7,9 @@ import org.motechproject.mds.annotations.Field;
 import org.motechproject.mds.event.CrudEventType;
 import org.motechproject.mds.util.SecurityMode;
 import org.motechproject.tasks.constants.TasksRoles;
-import org.motechproject.tasks.domain.enums.ParameterType;
-import org.motechproject.tasks.dto.FilterDto;
+import org.motechproject.tasks.domain.mds.ParameterType;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -50,15 +47,6 @@ public class Filter implements Serializable {
      */
     public Filter() {
         this(null, null, null, false, null, null);
-    }
-
-    /**
-     * Constructor.
-     * @param dto Filter data transfer object
-     */
-    public Filter(FilterDto dto){
-        this (dto.getDisplayName(), dto.getKey(), dto.getType(), dto.isNegationOperator(), dto.getOperator(),
-                dto.getExpression());
     }
 
     /**
@@ -127,20 +115,6 @@ public class Filter implements Serializable {
 
     public void setExpression(String expression) {
         this.expression = expression;
-    }
-
-    public FilterDto toDto() {
-        return new FilterDto(displayName, key, type, operator, negationOperator, expression);
-    }
-
-    public static List<Filter> toFilters(List<FilterDto> filterDtos) {
-        List<Filter> filters = new ArrayList<>();
-
-        for (FilterDto filterDto : filterDtos) {
-            filters.add(new Filter(filterDto));
-        }
-
-        return filters;
     }
 
     @Override

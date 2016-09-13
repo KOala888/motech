@@ -1,4 +1,4 @@
-package org.motechproject.tasks.domain.enums;
+package org.motechproject.tasks.domain.mds.task;
 
 /**
  * Enumerates all possible causes of task failures.

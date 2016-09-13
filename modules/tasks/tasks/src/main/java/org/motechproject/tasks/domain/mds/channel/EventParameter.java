@@ -9,8 +9,7 @@ import org.motechproject.mds.event.CrudEventType;
 import org.motechproject.mds.util.SecurityMode;
 import org.motechproject.tasks.constants.TasksRoles;
 import org.motechproject.tasks.domain.mds.Parameter;
-import org.motechproject.tasks.domain.enums.ParameterType;
-import org.motechproject.tasks.dto.EventParameterDto;
+import org.motechproject.tasks.domain.mds.ParameterType;
 
 import javax.jdo.annotations.Persistent;
 import java.util.Objects;
@@ -81,10 +80,6 @@ public class EventParameter extends Parameter {
 
     public void setTriggerEvent(TriggerEvent triggerEvent) {
         this.triggerEvent = triggerEvent;
-    }
-
-    public EventParameterDto toDto() {
-        return new EventParameterDto(getDisplayName(), getType(), eventKey);
     }
 
     @Override

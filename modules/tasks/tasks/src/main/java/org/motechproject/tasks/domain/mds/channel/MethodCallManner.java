@@ -1,6 +1,4 @@
-package org.motechproject.tasks.domain.enums;
-
-import org.motechproject.tasks.domain.mds.channel.ActionEvent;
+package org.motechproject.tasks.domain.mds.channel;
 
 /**
  * The <code>MethodCallManner</code> enumerates possible call manners of an <code>ActionEvent</code> service method.

@@ -4,7 +4,6 @@ import org.motechproject.mds.annotations.CrudEvents;
 import org.motechproject.mds.annotations.Entity;
 import org.motechproject.mds.annotations.Field;
 import org.motechproject.mds.event.CrudEventType;
-import org.motechproject.tasks.dto.TaskEventInformationDto;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -64,8 +63,6 @@ public abstract class TaskEventInformation implements Serializable {
         this.moduleVersion = moduleVersion;
         this.subject = subject;
     }
-
-    public abstract TaskEventInformationDto toDto();
 
     public boolean hasSubject() {
         return isNotBlank(subject);
