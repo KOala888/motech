@@ -2,7 +2,6 @@ package org.motechproject.tasks.service.impl;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.event.MotechEvent;
@@ -36,8 +35,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.motechproject.tasks.domain.enums.ParameterType.MAP;
-import static org.motechproject.tasks.domain.enums.ParameterType.TEXTAREA;
+import static org.motechproject.tasks.domain.mds.ParameterType.MAP;
+import static org.motechproject.tasks.domain.mds.ParameterType.TEXTAREA;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskActionExecutorTest {
@@ -54,8 +53,6 @@ public class TaskActionExecutorTest {
     private BundleContext bundleContext;
     @Mock
     private TasksPostExecutionHandler postExecutionHandler;
-    @InjectMocks
-    private TaskActionExecutor taskActionExecutor = new TaskActionExecutor();
 
     @Test
     public void shouldRaiseEventIfActionHasSubject() throws ActionNotFoundException, TaskHandlerException {
@@ -72,6 +69,7 @@ public class TaskActionExecutorTest {
         metadata.put(EventDataKeys.TASK_RETRY, null);
         metadata.put(EventDataKeys.TASK_ACTIVITY_ID, TASK_ACTIVITY_ID);
 
+        TaskActionExecutor taskActionExecutor = new TaskActionExecutor(taskService, activityService, eventRelay, postExecutionHandler);
         taskActionExecutor.setBundleContext(bundleContext);
 
         taskActionExecutor.execute(task, actionInformation, 0, new TaskContext(task, new HashMap<>(), metadata, activityService), TASK_ACTIVITY_ID);
@@ -92,6 +90,7 @@ public class TaskActionExecutorTest {
 
         Task task = new TaskBuilder().addAction(new TaskActionInformation("Action", "channel", "module", "0.1", "actionSubject")).build();
 
+        TaskActionExecutor taskActionExecutor = new TaskActionExecutor(taskService, activityService, eventRelay, postExecutionHandler);
         taskActionExecutor.setBundleContext(bundleContext);
 
         taskActionExecutor.execute(task, actionInformation, 0,  new TaskContext(task, new HashMap<>(), new HashMap<>(), activityService), TASK_ACTIVITY_ID);
@@ -113,6 +112,7 @@ public class TaskActionExecutorTest {
 
         Task task = new TaskBuilder().addAction(new TaskActionInformation("Action", "channel", "module", "0.1", "actionSubject")).build();
 
+        TaskActionExecutor taskActionExecutor = new TaskActionExecutor(taskService, activityService, eventRelay, postExecutionHandler);
         taskActionExecutor.setBundleContext(bundleContext);
 
         taskActionExecutor.execute(task, actionInformation, 0, new TaskContext(task, new HashMap<>(), new HashMap<>(), activityService), TASK_ACTIVITY_ID);
@@ -135,6 +135,7 @@ public class TaskActionExecutorTest {
 
         Task task = new TaskBuilder().addAction(new TaskActionInformation("Action", "channel", "module", "0.1", "actionSubject")).build();
 
+        TaskActionExecutor taskActionExecutor = new TaskActionExecutor(taskService, activityService, eventRelay, postExecutionHandler);
         taskActionExecutor.setBundleContext(bundleContext);
 
         taskActionExecutor.execute(task, actionInformation, 0, new TaskContext(task, new HashMap<>(), new HashMap<>(), activityService), TASK_ACTIVITY_ID);
@@ -153,6 +154,7 @@ public class TaskActionExecutorTest {
 
         Task task = new TaskBuilder().addAction(new TaskActionInformation("Action", "channel", "module", "0.1", "actionSubject")).build();
 
+        TaskActionExecutor taskActionExecutor = new TaskActionExecutor(taskService, activityService, eventRelay, postExecutionHandler);
 
         taskActionExecutor.execute(task, actionInformation, 0, new TaskContext(task, new HashMap<>(), new HashMap<>(), activityService), TASK_ACTIVITY_ID);
     }
@@ -167,6 +169,8 @@ public class TaskActionExecutorTest {
         when(taskService.getActionEventFor(actionInformation)).thenReturn(actionEvent);
 
         Task task = new TaskBuilder().addAction(new TaskActionInformation("Action", "channel", "module", "0.1", "actionSubject")).build();
+
+        TaskActionExecutor taskActionExecutor = new TaskActionExecutor(taskService, activityService, eventRelay, postExecutionHandler);
 
         taskActionExecutor.execute(task, actionInformation, 0, new TaskContext(task, new HashMap<>(), new HashMap<>(), activityService), TASK_ACTIVITY_ID);
     }
@@ -184,6 +188,7 @@ public class TaskActionExecutorTest {
 
         Task task = new TaskBuilder().addAction(new TaskActionInformation("Action", "channel", "module", "0.1", "actionSubject")).build();
 
+        TaskActionExecutor taskActionExecutor = new TaskActionExecutor(taskService, activityService, eventRelay, postExecutionHandler);
         taskActionExecutor.setBundleContext(bundleContext);
 
         taskActionExecutor.execute(task, actionInformation, 0, new TaskContext(task, new HashMap<>(), new HashMap<>(), activityService), TASK_ACTIVITY_ID);
@@ -200,6 +205,7 @@ public class TaskActionExecutorTest {
 
         Task task = new TaskBuilder().addAction(new TaskActionInformation("Action", "channel", "module", "0.1", "actionSubject")).build();
 
+        TaskActionExecutor taskActionExecutor = new TaskActionExecutor(taskService, activityService, eventRelay, postExecutionHandler);
         taskActionExecutor.setBundleContext(bundleContext);
 
         taskActionExecutor.execute(task, actionInformation, 0, prepareTaskContext(task), TASK_ACTIVITY_ID);
@@ -225,6 +231,7 @@ public class TaskActionExecutorTest {
         task.addAction(actionInformation);
         task.addAction(actionInformationWithPostActionParameter);
 
+        TaskActionExecutor taskActionExecutor = new TaskActionExecutor(taskService, activityService, eventRelay, postExecutionHandler);
         taskActionExecutor.setBundleContext(bundleContext);
 
         TaskContext taskContext = new TaskContext(task, new HashMap<>(), new HashMap<>(), activityService);

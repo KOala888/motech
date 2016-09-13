@@ -13,12 +13,8 @@ import org.motechproject.event.listener.EventListenerRegistryService;
 import org.motechproject.tasks.domain.mds.task.Task;
 import org.motechproject.tasks.domain.mds.task.TaskActionInformation;
 import org.motechproject.tasks.domain.mds.task.TaskTriggerInformation;
-import org.motechproject.tasks.dto.TaskActionInformationDto;
-import org.motechproject.tasks.dto.TaskDto;
-import org.motechproject.tasks.dto.TaskTriggerInformationDto;
 import org.motechproject.tasks.service.TaskActivityService;
 import org.motechproject.tasks.service.TaskService;
-import org.motechproject.tasks.service.TaskWebService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -74,9 +70,6 @@ public class TaskControllerTest {
     @Mock
     Task task;
 
-    @Mock
-    TaskWebService taskWebService;
-
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -84,21 +77,19 @@ public class TaskControllerTest {
 
     @Test
     public void shouldGetAllTasks() {
-        TaskActionInformationDto action = new TaskActionInformationDto("receive", "receiveDisplay", "action1", "action",
-                "0.15", "receive", "serviceInterface", "serviceMethod", new HashMap<>());
-        TaskTriggerInformationDto trigger = new TaskTriggerInformationDto("send", "trigger1", "trigger", "0.16", "send",
-                "send", "triggerSubject");
+        TaskActionInformation action = new TaskActionInformation("receive", "action1", "action", "0.15", "receive", new HashMap<String, String>());
+        TaskTriggerInformation trigger = new TaskTriggerInformation("send", "trigger1", "trigger", "0.16", "send", "send");
 
-        List<TaskDto> expected = new ArrayList<>();
-        expected.add(new TaskDto("name", trigger, asList(action)));
-        expected.add(new TaskDto("name", trigger, asList(action)));
-        expected.add(new TaskDto("name", trigger, asList(action)));
+        List<Task> expected = new ArrayList<>();
+        expected.add(new Task("name", trigger, asList(action)));
+        expected.add(new Task("name", trigger, asList(action)));
+        expected.add(new Task("name", trigger, asList(action)));
 
-        when(taskWebService.getAllTasks()).thenReturn(expected);
+        when(taskService.getAllTasks()).thenReturn(expected);
 
-        List<TaskDto> actual = controller.getAllTasks();
+        List<Task> actual = controller.getAllTasks();
 
-        verify(taskWebService, times(1)).getAllTasks();
+        verify(taskService, times(1)).getAllTasks();
 
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -106,14 +97,14 @@ public class TaskControllerTest {
 
     @Test
     public void shouldGetTaskWithId() {
-        TaskDto expected = new TaskDto();
+        Task expected = new Task();
         expected.setId(TASK_ID);
 
-        when(taskWebService.getTask(expected.getId())).thenReturn(expected);
+        when(taskService.getTask(expected.getId())).thenReturn(expected);
 
-        TaskDto actual = controller.getTask(expected.getId());
+        Task actual = controller.getTask(expected.getId());
 
-        verify(taskWebService).getTask(expected.getId());
+        verify(taskService).getTask(expected.getId());
 
         assertNotNull(actual);
         assertEquals(expected.getId(), actual.getId());
@@ -136,7 +127,7 @@ public class TaskControllerTest {
 
         controller.saveTask(expected);
 
-        verify(taskWebService).save(expected);
+        verify(taskService).save(expected);
     }
 
     @Test
@@ -145,7 +136,7 @@ public class TaskControllerTest {
 
         controller.saveTask(expected);
 
-        verify(taskWebService, never()).save(expected);
+        verify(taskService, never()).save(expected);
     }
 
     @Test
@@ -160,7 +151,7 @@ public class TaskControllerTest {
 
         controller.save(expected);
 
-        verify(taskWebService).save(expected);
+        verify(taskService).save(expected);
     }
 
     @Test

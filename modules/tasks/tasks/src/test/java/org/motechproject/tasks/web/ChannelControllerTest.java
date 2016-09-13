@@ -3,8 +3,8 @@ package org.motechproject.tasks.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tasks.dto.ChannelDto;
-import org.motechproject.tasks.service.TaskWebService;
+import org.motechproject.tasks.domain.mds.channel.Channel;
+import org.motechproject.tasks.service.ChannelService;
 import org.motechproject.tasks.service.TriggerEventService;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ChannelControllerTest {
 
     @Mock
-    TaskWebService taskWebService;
+    ChannelService channelService;
 
     @Mock
     TriggerEventService triggerEventService;
@@ -30,21 +30,21 @@ public class ChannelControllerTest {
     public void setup() throws Exception {
         initMocks(this);
 
-        controller = new ChannelController(taskWebService, triggerEventService);
+        controller = new ChannelController(channelService, triggerEventService);
     }
 
     @Test
     public void shouldGetAllChannels() {
-        List<ChannelDto> expected = new ArrayList<>();
-        expected.add(new ChannelDto());
-        expected.add(new ChannelDto());
-        expected.add(new ChannelDto());
+        List<Channel> expected = new ArrayList<>();
+        expected.add(new Channel());
+        expected.add(new Channel());
+        expected.add(new Channel());
 
-        when(taskWebService.getAllChannels()).thenReturn(expected);
+        when(channelService.getAllChannels()).thenReturn(expected);
 
-        List<ChannelDto> actual = controller.getAllChannels();
+        List<Channel> actual = controller.getAllChannels();
 
-        verify(taskWebService).getAllChannels();
+        verify(channelService).getAllChannels();
 
         assertNotNull(actual);
         assertEquals(expected, actual);
